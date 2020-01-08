@@ -296,3 +296,107 @@ OK
 Destroying test database for alias 'default'...
 ```
 Success! You’ll do much more with testing in the future, especially once you start working with databases. For now, it’s important to see how easy it is to add tests each and every time we add new functionality to your Django project.
+
+# Heroku
+
+Sign up for a free [Heroku](https://www.heroku.com/) account on their website. After confirm your email Heroku will redirect you to the dashboard section of the site.
+
+![heroku_dashboard](./readme_images/heroku_dashboard.png)
+<p style="text-align: center; font-weight: bold;">Heroku dashboard</p>
+
+Now install Heroku’s Command Line Interface (CLI), can be installed via [this page](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
+
+```bash
+(django_pagesapp) $ heroku login
+heroku: Press any key to open up the browser to login or q to exit: 
+```
+Press any key and log in to heroku on the browser.
+
+After login, an output like the following should appear on cli.
+
+```bash
+(django_pagesapp) $ heroku login
+heroku: Press any key to open up the browser to login or q to exit: 
+Opening browser to https://cli-auth.heroku.com/auth/cli/browser/93ad46b4-36c0-40ba-b9c4-7d32f181e149
+Logging in... done
+Logged in as yalcinozbekceng@gmail.com
+```
+
+## Additional Files
+
+You need to make the following four changes to our Pages project so it’s ready to deploy online with Heroku:
+ - update Pipfile.lock
+ - make a new Procfile file
+ - install gunicorn as our web server
+ - make aone-line change to settings.py file
+
+
+## Deploy
+
+The last step is to actually deploy with Heroku. If you’ve ever configured a server yourself in the past, you’ll be amazed at how much simpler the process is with a platform-as-a-service provider like Heroku.
+
+ - Our process will be as follows:
+ - create a new app on Heroku and push our code to it
+ - add a git remote “hook” for Heroku
+ - configure the app to ignore static files, which we’ll cover in later chapters
+ - start the Heroku server so the app is live
+ - visit the app on Heroku’s provided URL
+
+First step, creating a new Heroku app, from the command line with heroku create. Heroku will create a random name for app, in my case hidden-forest-97936. Your name will be different.
+
+```bash
+(django_pagesapp) $ heroku create
+Creating app... done, hidden-forest-97936
+https://hidden-forest-97936.herokuapp.com/ |
+https://git.heroku.com/hidden-forest-97936.git
+```
+
+Now you need to add a “hook” for Heroku within git. This means that git will store both your settings for pushing code to Git and to Heroku. My Heroku app is called cryptic-oasis-40349 so my command is as follows.
+
+```
+(django_pagesapp) $ heroku git:remote -a hidden-forest-97936
+```
+You should replace hidden-forest-97936 with the app name Heroku provides.
+
+You only need to do one set of Heroku configurations at this point, which is to tell Heroku to ignore static files like CSS and JavaScript which Django by default tries to optimize for us. You’ll cover this
+in other django apps so for now just run the following command.
+
+(django_pagesapp) $ heroku config:set DISABLE_COLLECTSTATIC=1
+
+Now push your code to Heroku. Because you set our “hook” previously, it will go to Heroku.
+
+```bash
+(django_pagesapp) $ git push heroku master
+```
+
+If you just typed git push origin master then the code is pushed to Git, not Heroku. Adding heroku to the command sends the code to Heroku. This is a little confusing the first few times.
+
+Finally you need to make your Heroku app live. As websites grow in traffic they need additional Heroku services but for our basic example we can use the lowest level, web=1 , which also happens to be free!
+Type the following command.
+
+```bash
+(django_pagesapp) $ heroku ps:scale web=1
+```
+
+Done! The last step is to confirm your app is live and online. If you use the command heroku open your web browser will open a new tab with the URL of your app:
+
+```bash
+(django_pagesapp) $ heroku open
+```
+
+Mine is at https://hidden-forest-97936.herokuapp.com/. You can see both the homepage is up:
+
+![homepage_on_heroku](./readme_images/homepage_on_heroku.png)
+<p style="text-align: center; font-weight: bold;">Homepage on heroku</p>
+
+As is the about page:
+
+![about_page_on_heroku](./readme_images/about_page_on_heroku.png)
+<p style="text-align: center; font-weight: bold;">About page on heroku</p>
+
+You do not have to log out or exit from your Heroku app. It will continue running at this free tier on its
+own
+
+## Conclusion
+Congratulations on building and deploying Django project! Templates,
+class-based views, explored URLConfs more fully, added basic tests, and Heroku are used.
